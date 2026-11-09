@@ -1,4 +1,4 @@
-# Media Forge — Microsoft Store listing copy
+# Media Forge — Microsoft Store listing copy (Store name: "Media Forge Video Converter", ID 9N6XGL7KL5M7)
 
 Paste these into Partner Center → Store listings → English (United States). Character limits are Microsoft's.
 

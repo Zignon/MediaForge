@@ -19,15 +19,13 @@ if (process.platform !== 'win32') {
   console.error('The AppX/MSIX target needs Microsoft\'s makeappx.exe from the Windows SDK: run this on Windows 10/11.');
   process.exit(1);
 }
-if (!fs.existsSync(identityFile)) {
-  console.error('store.identity.json not found.\nCopy store.identity.example.json to store.identity.json and fill it from Partner Center (Product identity page).');
-  process.exit(1);
-}
-const id = JSON.parse(fs.readFileSync(identityFile, 'utf8'));
+// Identity defaults live in electron-builder.store.json; store.identity.json (optional) overrides them.
+const id = { identityName: baseConfig.appx.identityName, publisher: baseConfig.appx.publisher, publisherDisplayName: baseConfig.appx.publisherDisplayName,
+  ...(fs.existsSync(identityFile) ? JSON.parse(fs.readFileSync(identityFile, 'utf8')) : {}) };
 for (const k of ['identityName', 'publisher', 'publisherDisplayName']) {
-  if (!id[k] || /PARTNER_CENTER/.test(id[k])) { console.error(`store.identity.json: "${k}" is missing or still a placeholder.`); process.exit(1); }
+  if (!id[k] || /PARTNER_CENTER/.test(id[k])) { console.error(`Store identity "${k}" is missing or still a placeholder (electron-builder.store.json / store.identity.json).`); process.exit(1); }
 }
-if (!/^CN=/.test(id.publisher)) { console.error('store.identity.json: "publisher" must be the full Package/Identity/Publisher string, e.g. "CN=12345678-ABCD-...".'); process.exit(1); }
+if (!/^CN=/.test(id.publisher)) { console.error('Store identity "publisher" must be the full Package/Identity/Publisher string, e.g. "CN=12345678-ABCD-...".'); process.exit(1); }
 if (!fs.existsSync(path.join(root, 'vendor', 'ffmpeg', 'ffmpeg.exe'))) {
   console.log('[store] fetching FFmpeg…');
   execFileSync(process.execPath, [path.join(__dirname, 'fetch-ffmpeg.js')], { stdio: 'inherit' });
