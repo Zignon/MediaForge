@@ -97,6 +97,7 @@ jobs:
           files: |
             dist/MediaForge-Setup-*.exe
             dist-store/*.appx
+            store/media-forge-store-kit.zip
           generate_release_notes: true
 
       # ---------------- Microsoft Store submission ----------------
