@@ -40,7 +40,7 @@ function ensureNsis() {
   const tmp = path.join(os.tmpdir(), `nsis-${NSIS_VERSION}.7z`);
   const url = `https://github.com/electron-userland/electron-builder-binaries/releases/download/nsis-${NSIS_VERSION}/nsis-${NSIS_VERSION}.7z`;
   execFileSync('curl', ['-L', '--fail', '--retry', '3', '-o', tmp, url], { stdio: 'inherit' });
-  execFileSync(sevenZip, ['x', '-y', `-o${path.dirname(dir)}`, tmp], { stdio: 'inherit' });
+  execFileSync(sevenZip, ['x', '-y', `-o${dir}`, tmp], { stdio: 'inherit' });
   fs.unlinkSync(tmp);
   if (process.platform !== 'win32') fs.chmodSync(bin, 0o755);
   return { dir, bin };
