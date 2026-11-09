@@ -1,0 +1,67 @@
+{
+  "name": "media-forge",
+  "productName": "Media Forge",
+  "version": "1.2.0",
+  "description": "Hardware-accelerated video converter for Windows",
+  "author": "Media Forge",
+  "license": "MIT",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "fetch-ffmpeg": "node scripts/fetch-ffmpeg.js",
+    "fetch-vcredist": "node scripts/fetch-vcredist.js",
+    "pack": "electron-builder --win --x64 --dir",
+    "installer": "node scripts/build-installer.js",
+    "dist": "npm run fetch-ffmpeg && npm run fetch-vcredist && npm run pack && npm run installer",
+    "store": "node scripts/build-store.js"
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
+    "resedit": "^2.0.3"
+  },
+  "build": {
+    "appId": "com.mediaforge.app",
+    "productName": "Media Forge",
+    "copyright": "Copyright © 2026 Media Forge",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "vendor/ffmpeg",
+        "to": "ffmpeg",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "vendor/prereqs",
+        "to": "prereqs",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "icon": "build/icon.ico",
+      "artifactName": "MediaForge-Setup-${version}-x64.${ext}",
+      "requestedExecutionLevel": "asInvoker",
+      "signAndEditExecutable": false,
+      "target": [
+        "dir"
+      ]
+    },
+    "afterPack": "scripts/after-pack.js",
+    "electronLanguages": [
+      "en-US"
+    ]
+  },
+  "homepage": "https://github.com/YOUR-ACCOUNT/media-forge"
+}

@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
+<title>Media Forge</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="brand">
+      <img src="../../assets/icon-128.png" alt="" class="brand-icon">
+      <div>
+        <div class="brand-name">MEDIA <span>FORGE</span></div>
+        <div class="brand-sub">Hardware-accelerated video converter</div>
+      </div>
+    </div>
+    <div class="hw-chip" id="hwChip" title="Click for hardware details">
+      <span class="dot" id="hwDot"></span>
+      <span id="hwText">Detecting hardware…</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- ================= QUEUE ================= -->
+    <section class="panel queue-panel" id="dropZone">
+      <div class="panel-head">
+        <h2>Queue <span class="count" id="queueCount">0</span></h2>
+        <div class="head-actions">
+          <button class="btn ghost" id="btnAddFiles">＋ Add files</button>
+          <button class="btn ghost" id="btnAddFolder">＋ Add folder</button>
+          <button class="btn ghost" id="btnClear" title="Remove finished, failed and cancelled items">Clear finished</button>
+        </div>
+      </div>
+      <div class="queue-list" id="queueList">
+        <div class="empty" id="emptyState">
+          <div class="empty-anvil"></div>
+          <p><strong>Drop video files here</strong></p>
+          <p class="muted">MKV, MPEG, AVI, MP4, MOV, WMV, TS, WebM, FLV and more</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SETTINGS ================= -->
+    <aside class="panel settings-panel">
+      <div class="panel-head"><h2>Output</h2>
+        <select id="presetSelect" class="select small" title="Quick presets">
+          <option value="">Presets…</option>
+          <option value="mp4_h264">MP4 · H.264 · universal</option>
+          <option value="mp4_hevc">MP4 · H.265 · smaller files</option>
+          <option value="mkv_hevc">MKV · H.265 · archive</option>
+          <option value="mkv_av1">MKV · AV1 · best compression</option>
+          <option value="webm_vp9">WebM · VP9 · web</option>
+          <option value="mp4_1080">MP4 · H.264 · 1080p</option>
+          <option value="remux">Remux only (no re-encode)</option>
+        </select>
+      </div>
+      <div class="settings-body">
+        <div class="group dest-group">
+          <div class="group-title">Destination folder</div>
+          <label class="row check"><input type="radio" name="outputMode" id="outputModeCustom" value="custom"><span>Save to this folder:</span></label>
+          <div class="dest-box" id="destBox">
+            <span id="outputDir" class="path-text" title=""></span>
+            <button class="btn tiny" id="btnOutputDir">Browse…</button>
+            <button class="btn ghost tiny" id="btnOpenOutputDir" title="Open this folder">Open</button>
+          </div>
+          <label class="row check"><input type="radio" name="outputMode" id="outputModeSource" value="source"><span>Save next to each source file</span></label>
+        </div>
+
+        <div class="group">
+          <div class="group-title">Format</div>
+          <label class="row"><span>Container</span>
+            <select id="container" class="select">
+              <option value="mp4">MP4</option><option value="mkv">MKV</option><option value="mov">MOV</option>
+              <option value="webm">WebM</option><option value="avi">AVI</option><option value="ts">MPEG-TS</option>
+            </select></label>
+          <label class="row"><span>Video codec</span>
+            <select id="videoCodec" class="select">
+              <option value="h264">H.264 / AVC</option><option value="hevc">H.265 / HEVC</option>
+              <option value="av1">AV1</option><option value="vp9">VP9</option><option value="mpeg2">MPEG-2</option>
+              <option value="copy">Copy (no re-encode)</option>
+            </select></label>
+          <label class="row"><span>Encoder</span>
+            <select id="encoder" class="select"><option value="auto">Auto (best available)</option></select></label>
+          <div class="encoder-note" id="encoderNote"></div>
+          <label class="row check"><input type="checkbox" id="hwDecode"><span>Hardware-accelerated decoding</span></label>
+        </div>
+
+        <div class="group">
+          <div class="group-title">Quality</div>
+          <div class="seg" id="speedSeg">
+            <button data-v="fast">Fast</button><button data-v="balanced" class="on">Balanced</button><button data-v="quality">Quality</button>
+          </div>
+          <div class="seg" id="qmodeSeg">
+            <button data-v="quality" class="on">Constant quality</button><button data-v="bitrate">Target bitrate</button>
+          </div>
+          <div id="qualityRow" class="row slider-row">
+            <span>Quality <em id="qualityVal">22</em></span>
+            <input type="range" id="quality" min="10" max="40" step="1">
+            <div class="slider-hint"><span>Better</span><span>Smaller</span></div>
+          </div>
+          <label id="bitrateRow" class="row hidden"><span>Bitrate (kbps)</span>
+            <input type="number" id="bitrateKbps" class="input" min="200" max="100000" step="100"></label>
+          <label class="row"><span>Resolution</span>
+            <select id="resolution" class="select">
+              <option value="source">Same as source</option><option value="2160">4K · 2160p</option><option value="1440">1440p</option>
+              <option value="1080">1080p</option><option value="720">720p</option><option value="576">576p</option><option value="480">480p</option><option value="360">360p</option>
+            </select></label>
+          <label class="row"><span>Frame rate</span>
+            <select id="fps" class="select">
+              <option value="source">Same as source</option><option value="23.976">23.976</option><option value="24">24</option>
+              <option value="25">25</option><option value="29.97">29.97</option><option value="30">30</option><option value="50">50</option><option value="60">60</option>
+            </select></label>
+        </div>
+
+        <div class="group">
+          <div class="group-title">Audio &amp; subtitles</div>
+          <label class="row"><span>Audio</span>
+            <select id="audioCodec" class="select">
+              <option value="copy">Copy original</option><option value="aac">AAC</option><option value="ac3">AC-3 (Dolby)</option>
+              <option value="eac3">E-AC-3</option><option value="mp3">MP3</option><option value="opus">Opus</option><option value="flac">FLAC</option><option value="none">No audio</option>
+            </select></label>
+          <label class="row" id="audioBitrateRow"><span>Audio bitrate</span>
+            <select id="audioBitrate" class="select">
+              <option value="96">96 kbps</option><option value="128">128 kbps</option><option value="160">160 kbps</option>
+              <option value="192">192 kbps</option><option value="256">256 kbps</option><option value="320">320 kbps</option><option value="640">640 kbps</option>
+            </select></label>
+          <label class="row"><span>Subtitles</span>
+            <select id="subtitles" class="select"><option value="keep">Keep when supported</option><option value="drop">Drop</option></select></label>
+          <label class="row check"><input type="checkbox" id="stripMetadata"><span>Remove all metadata (titles, tags, chapters, encoder info)</span></label>
+        </div>
+
+        <div class="group">
+          <div class="group-title">Naming &amp; performance</div>
+          <label class="row"><span>Filename suffix</span><input type="text" id="suffix" class="input" placeholder="(none)"></label>
+          <label class="row"><span>Concurrent jobs</span>
+            <select id="concurrency" class="select"></select></label>
+          <div class="hint" id="concurrencyHint"></div>
+          <label class="row check"><input type="checkbox" id="openFolderWhenDone"><span>Open output folder when the queue finishes</span></label>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="actionbar">
+    <div class="status" id="statusText">Ready.</div>
+    <div class="action-buttons">
+      <button class="btn danger hidden" id="btnStop">■ Stop</button>
+      <button class="btn primary" id="btnStart" disabled>⚒ Start forging</button>
+    </div>
+  </footer>
+</div>
+
+<!-- Hardware dialog -->
+<div class="modal hidden" id="hwModal">
+  <div class="modal-card">
+    <div class="modal-head"><h3>Hardware &amp; encoders</h3><button class="btn ghost tiny" id="hwRescan">Re-scan</button><button class="close" id="hwClose">✕</button></div>
+    <div class="modal-body" id="hwBody"></div>
+  </div>
+</div>
+
+<!-- Log dialog -->
+<div class="modal hidden" id="logModal">
+  <div class="modal-card wide">
+    <div class="modal-head"><h3 id="logTitle">Log</h3><button class="close" id="logClose">✕</button></div>
+    <pre class="modal-body log" id="logBody"></pre>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+node_modules/
+dist/
+dist-store/
+vendor/
+store.identity.json

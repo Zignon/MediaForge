@@ -1,0 +1,46 @@
+{
+  "$comment": "Microsoft Store build (MSIX/AppX). Run `npm run store` on Windows 10/11 with the Windows SDK installed. Fill the three IDENTITY values from Partner Center → Product management → Product identity.",
+  "appId": "com.mediaforge.app",
+  "productName": "Media Forge",
+  "copyright": "Copyright © 2026 Media Forge",
+  "directories": { "output": "dist-store", "buildResources": "build" },
+  "files": ["src/**/*", "assets/**/*", "package.json"],
+  "extraResources": [
+    { "from": "vendor/ffmpeg", "to": "ffmpeg", "filter": ["**/*"] }
+  ],
+  "afterPack": "scripts/after-pack.js",
+  "electronLanguages": ["en-US"],
+  "win": {
+    "icon": "build/icon.ico",
+    "target": [{ "target": "appx", "arch": ["x64"] }],
+    "artifactName": "MediaForge-Store-${version}-x64.${ext}",
+    "signAndEditExecutable": false,
+    "fileAssociations": [
+      { "ext": "mkv",  "name": "Matroska Video" },
+      { "ext": "mp4",  "name": "MP4 Video" },
+      { "ext": "m4v",  "name": "MP4 Video" },
+      { "ext": "avi",  "name": "AVI Video" },
+      { "ext": "mpg",  "name": "MPEG Video" },
+      { "ext": "mpeg", "name": "MPEG Video" },
+      { "ext": "mov",  "name": "QuickTime Video" },
+      { "ext": "wmv",  "name": "Windows Media Video" },
+      { "ext": "ts",   "name": "MPEG Transport Stream" },
+      { "ext": "m2ts", "name": "MPEG Transport Stream" },
+      { "ext": "webm", "name": "WebM Video" },
+      { "ext": "flv",  "name": "Flash Video" },
+      { "ext": "vob",  "name": "DVD Video" }
+    ]
+  },
+  "appx": {
+    "identityName": "IDENTITY_NAME_FROM_PARTNER_CENTER",
+    "publisher": "CN=PUBLISHER_ID_FROM_PARTNER_CENTER",
+    "publisherDisplayName": "PUBLISHER_DISPLAY_NAME_FROM_PARTNER_CENTER",
+    "applicationId": "MediaForge",
+    "displayName": "Media Forge",
+    "backgroundColor": "#07101f",
+    "languages": ["en-US"],
+    "showNameOnTiles": true,
+    "setBuildNumber": false,
+    "addAutoLaunchExtension": false
+  }
+}
